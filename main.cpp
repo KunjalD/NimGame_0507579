@@ -43,35 +43,70 @@ void display_heap(int heap[])	// calls the function display heap
     }
     cout << endl;
 }
-/*int remove_sticks(int x)
+bool ifsum_even()
 {
-    int y;
-    cout << " inside odd y ";
-    //y = 3 * rand() % x;
-    cout << " odd y " << y;
+    int total=0;
+    cout << "num  of heap " << num_heap << endl;
+    for(int i=1;i<=num_heap;i++)
+    {
+        total = total + HEAP_SIZE[i] -1;
+        
+    }
+    cout << total << " TOTAL ";
+    if(total%2 == 0)
+    {
+        return true;
+    }else{
+        return false;
+    }
+    
+}
+int remove_sticks(int x)
+{
+    int y=1;
+    if(x != 0)
+    {
+        if(ifsum_even())
+        {
+            int y;
+            cout << " inside even x " << x << endl;
+            y = 2 * (rand() % x);
+            cout << " odd y " << y << endl;
+            return y;
+            
+        }else
+        {
+            int y;
+            cout << " inside odd x " << x << endl;
+            y = 3 * (rand() % x);
+            cout << " odd y " << y << endl;
+            return y;
+        }
+        
+    }else
+    {
+        remove_sticks(x+1);
+    }
     return y;
-}*/
+}
 void computerMove()
 {
-    int curr_heap = randFunction(num_heap);
-    //int curr_sticks =heap[curr_heap];
+    int curr_heap = randFunction(num_heap+1);
     int remove_stick = 0;
-    //cout << curr_heap << " curr_heap " << endl;
-    //cout << curr_sticks << " curr_sticks " << endl;
-    //cout << heap[curr_heap] << " heap curr_heap " << endl;
+    
+    while(heap[curr_heap] == 0 || curr_heap == 0)
+    {
+         curr_heap = randFunction(num_heap+1);
+    }
     if(heap[curr_heap] != 0)
     {
         cout << "NOT ZERO" << endl;
-        remove_stick = randFunction(heap[curr_heap]);
+        remove_stick = remove_sticks(heap[curr_heap]);
         heap[curr_heap] -= remove_stick;
-    }else
-    {
-        cout << "ZERO " << endl;
-        computerMove();
     }
 
    // cout << curr_sticks << " curr_sticks ";
-    cout << heap[curr_heap] << " heap value after remoev ";
+    cout << heap[curr_heap] << " heap value after remove ";
     cout << "\n" << "Player computer took "<< remove_stick << " objects from heap " << curr_heap << "\n";
     display_heap(heap);
     if(gameStatus(heap) == true)
@@ -105,12 +140,13 @@ void humanMove()
 
 int randFunction(int size)
 {
-    int RandIndex =0;
+    int RandIndex = 0;
     if(size != 0)
     {
         cout << size << " randome function size " << endl;
         RandIndex = rand() % size;
     }
+    cout << "RandIndex " << RandIndex << endl;
     return RandIndex;
 }
 
@@ -134,6 +170,7 @@ int main()
     {
         if(firstPlayer == "computer")
         {
+            cout << "here again in main compu";
             computerMove();
         }else if(firstPlayer=="human")
         {
