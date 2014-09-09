@@ -21,11 +21,14 @@ int *heap;
 
 string firstPlayer;
 int randFunction(int size);
-int randomPlayer();
-void winner(string)
+
+
+//Display wining player message
+void winner(string firstPlayer)
 {
     cout << "Player "<< firstPlayer << " has won.";
 }
+// Checks the game status if it is over or not
 bool gameStatus(int *heap)
 {
     for (int i = 1; i <= NUM_HEAPS[heap_index]; i++)
@@ -34,6 +37,7 @@ bool gameStatus(int *heap)
     }
     return true;
 }
+// Displays the content of heap
 void display_heap(int heap[])	// calls the function display heap
 {
     cout << endl;
@@ -43,16 +47,15 @@ void display_heap(int heap[])	// calls the function display heap
     }
     cout << endl;
 }
+// checks if the sum of heap is even or odd
 bool ifsum_even()
 {
     int total=0;
-    cout << "num  of heap " << num_heap << endl;
     for(int i=1;i<=num_heap;i++)
     {
-        total = total + HEAP_SIZE[i] -1;
-        
+        total = total + heap[i];
     }
-    cout << total << " TOTAL ";
+    //cout << total << " TOTAL ";
     if(total%2 == 0)
     {
         return true;
@@ -61,6 +64,7 @@ bool ifsum_even()
     }
     
 }
+// Computer sends the current number of sticks and gets the number it should remove.
 int remove_sticks(int x)
 {
     int y=1;
@@ -68,27 +72,40 @@ int remove_sticks(int x)
     {
         if(ifsum_even())
         {
-            int y;
-            cout << " inside even x " << x << endl;
-            y = 2 * (rand() % x);
-            cout << " odd y " << y << endl;
+            for(int i=x;i>0;i--)
+            {
+                //cout << " EVEN " << endl;
+                if(i%2==0)
+                {
+                    //cout <<i << " i";
+                    y =1;
+                    break;
+                }
+            }
             return y;
             
         }else
         {
-            int y;
-            cout << " inside odd x " << x << endl;
-            y = 3 * (rand() % x);
-            cout << " odd y " << y << endl;
+            for(int i=x;i>0;i--)
+            {
+                //cout << " ODD " << endl;
+                if(i%3==0)
+                {
+                    //cout <<i << " i";
+                    y = i;
+                    break;
+                }
+            }
             return y;
         }
         
     }else
     {
-        remove_sticks(x+1);
+        remove_sticks(x);
+        return y;
     }
-    return y;
 }
+//Computer Move for the game
 void computerMove()
 {
     int curr_heap = randFunction(num_heap+1);
@@ -96,17 +113,15 @@ void computerMove()
     
     while(heap[curr_heap] == 0 || curr_heap == 0)
     {
-         curr_heap = randFunction(num_heap+1);
+         curr_heap = randFunction(num_heap);
     }
     if(heap[curr_heap] != 0)
     {
-        cout << "NOT ZERO" << endl;
         remove_stick = remove_sticks(heap[curr_heap]);
         heap[curr_heap] -= remove_stick;
     }
 
-   // cout << curr_sticks << " curr_sticks ";
-    cout << heap[curr_heap] << " heap value after remove ";
+    //cout << heap[curr_heap] << " heap value after remove ";
     cout << "\n" << "Player computer took "<< remove_stick << " objects from heap " << curr_heap << "\n";
     display_heap(heap);
     if(gameStatus(heap) == true)
@@ -115,14 +130,14 @@ void computerMove()
     }
     firstPlayer = "human";
 }
+// Human move for the game
 void humanMove()
 {
     int x,y;
     cout << "\n" << "Player human enter the number of objects (Y) to take from what heap (X)- in order: Y X" << "\n";
     cin >> y >> x;
-    if(NUM_HEAPS[heap_index] >= x > 0 && heap[x]>=y)
+    if(NUM_HEAPS[heap_index] >= x > 0 && heap[x]>=y && x!=0 && y!=0)
     {
-        cout << "possible" << "\n";
         heap[x] -= y;
         //check for game over
         display_heap(heap);
@@ -137,19 +152,19 @@ void humanMove()
     }
     firstPlayer = "computer";
 }
-
+// Functions which calculates the random numbers
 int randFunction(int size)
 {
     int RandIndex = 0;
     if(size != 0)
     {
-        cout << size << " randome function size " << endl;
+        //cout << size << " randome function size " << endl;
         RandIndex = rand() % size;
     }
-    cout << "RandIndex " << RandIndex << endl;
+    //cout << "RandIndex " << RandIndex << endl;
     return RandIndex;
 }
-
+// main
 int main()
 {
     srand((unsigned)time(NULL));
@@ -162,15 +177,14 @@ int main()
         subheap_index = randFunction(3);
         subheap_size = HEAP_SIZE[subheap_index];
         heap[i] = subheap_size;
-        cout << " here again " << heap[i] ;
+        cout << " " << heap[i];
     }
     firstPlayer = PLAYER[randFunction(2)];
-    cout << "\n" << "Player " << firstPlayer << " goes first";
     while(gameStatus(heap) != 1)
     {
         if(firstPlayer == "computer")
         {
-            cout << "here again in main compu";
+            //cout << "here again in main compu";
             computerMove();
         }else if(firstPlayer=="human")
         {
